@@ -1,0 +1,37 @@
+h4.sub_headline
+{
+	padding-left: 20px;
+}
+
+#tl_import
+{
+	padding-left: 20px;
+}
+
+#tl_import h3
+{
+	float: left;
+}
+
+#tl_import .tl_message
+{
+	margin-left: 30px;
+	color: #8AB858;
+}
+
+#tl_import .mode_container
+{
+	float: right;
+	margin-right: 17px;
+}
+
+#tl_import .upload_container
+{
+	margin-top: -8px;
+	margin-bottom: 5px;
+}
+
+.tl_formbody_submit
+{
+	width: 690px;
+}

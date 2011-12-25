@@ -1,0 +1,25 @@
+h4.sub_headline
+{
+	padding-left: 20px;
+}
+
+a.header_inventory_history
+{
+	display: block;
+	padding: 3px 0px 3px 20px;
+	white-space: nowrap;
+	background: url('inventory-maintenance-icon.png') left center no-repeat;
+}
+
+.tl_daterange
+{
+	padding-left: 55px;
+}
+
+.print_section
+{
+	float: right;
+	margin-right: 60px;
+	height: 16px;
+	display: inline-block;
+}
