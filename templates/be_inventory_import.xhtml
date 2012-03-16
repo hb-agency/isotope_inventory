@@ -3,8 +3,8 @@
   <a href="<?php echo $this->href ?>" class="header_back" title="<?php echo $this->title ?>"><?php echo $this->title ?></a>
 </div>
 
-<h2 class="sub_headline"><?php echo $GLOBALS['TL_LANG']['MSC']['inventory_import_headline']; ?></h2>
-<h4 class="sub_headline"><?php echo $GLOBALS['TL_LANG']['MSC']['inventory_import_subheadline']; ?></h4>
+<h2 class="sub_headline"><?php echo $this->headline; ?></h2>
+<h4 class="sub_headline"><?php echo $this->subheadline; ?></h4>
 
 <div id="tl_import" style="padding-bottom:25px;">
 <?php if ($this->importMessage): ?>
@@ -16,7 +16,7 @@
 
 <h3>
 	<label for="ctrl_singleSRC" class="mandatory"><span class="invisible">Mandatory field</span> Source file<span class="mandatory">*</span></label>
-	<a href="contao/files.php" title="Open file manager in a popup window" rel="lightbox[files 765 80%]">
+	<a href="contao/files.php" title="Open file manager in a popup window" onclick="Backend.getScrollOffset(); this.blur(); Backend.openWindow(this, 750, 500); return false;">
 		<img src="system/themes/default/images/filemanager.gif" width="14" height="14" alt="Open file manager in a popup window" style="vertical-align:text-bottom;">
 	</a>
 </h3>
@@ -37,7 +37,7 @@
 
 	<div class="tl_formbody_submit">
 		<div class="tl_submit_container">
-			<input type="submit" name="<?php echo $this->submit; ?>" id="<?php echo $this->submit; ?>" class="tl_submit" accesskey="i" value="<?php echo $GLOBALS['TL_LANG']['MSC']['btn_inventory_import']; ?>">
+			<input type="submit" name="<?php echo $this->submit; ?>" id="<?php echo $this->submit; ?>" class="tl_submit" accesskey="i" value="<?php echo $this->submitLabel; ?>">
 		</div>
 	</div>
 </form>

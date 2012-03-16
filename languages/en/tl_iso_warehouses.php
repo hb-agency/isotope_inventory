@@ -38,7 +38,9 @@ $GLOBALS['TL_LANG']['tl_iso_warehouses']['city']       				= array('City', 'Plas
 $GLOBALS['TL_LANG']['tl_iso_warehouses']['subdivision']  			= array('State', 'Plase enter the name of the state.');
 $GLOBALS['TL_LANG']['tl_iso_warehouses']['country']     			= array('Country', 'Please select a country. This is also the default for custom shipping/billing addresses.');
 $GLOBALS['TL_LANG']['tl_iso_warehouses']['phone']       			= array('Phone number', 'Please enter the phone number.');
-$GLOBALS['TL_LANG']['tl_iso_warehouses']['email'] 					= array('Warehouse E-mail address', 'Please enter a valid e-mail address.');
+$GLOBALS['TL_LANG']['tl_iso_warehouses']['email'] 					= array('Warehouse email address', 'Please enter a valid email address.');
+$GLOBALS['TL_LANG']['tl_iso_warehouses']['iso_lowInv_adminEmail']	= array('Low inventory admin email address', 'Enter an admin email address if you want this to go to an address other than the warehouse email address.');
+$GLOBALS['TL_LANG']['tl_iso_warehouses']['iso_mail_lowInv']			= array('Low inventory email template', 'Please choose a low inventory email template.');
 
 
 /**
@@ -57,3 +59,4 @@ $GLOBALS['TL_LANG']['tl_iso_warehouses']['import']				= array('Batch import', 'I
  */
 $GLOBALS['TL_LANG']['tl_iso_warehouses']['general_legend']					= 'General';
 $GLOBALS['TL_LANG']['tl_iso_warehouses']['address_legend']	    			= 'Address information';
+$GLOBALS['TL_LANG']['tl_iso_warehouses']['low_inv_legend']	    			= 'Low Inventory Email';

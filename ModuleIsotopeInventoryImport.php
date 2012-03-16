@@ -52,7 +52,7 @@ class ModuleIsotopeInventoryImport extends BackendModule
 	 * Form ID
 	 * @var string
 	 */
-	protected $strFormId = 'import_inventory_form';
+	protected $strFormId = 'tl_iso_warehouses';
 	
 	/**
 	 * Name of the hidden FORM_SUBMIT input
@@ -78,18 +78,9 @@ class ModuleIsotopeInventoryImport extends BackendModule
 		// Create override mode checkbox
 		$objCheckBox = new CheckBox($arrOverrideModeData);
 		$objCheckBox->options = array(array('label'=>$GLOBALS['TL_LANG']['MSC']['inventory_override_quantites'], 'value'=>'1'));
-		
-		// File tree data
-		$arrFileTreeData = array
-		(
-			'id'		=> $this->strFileTree,
-			'name'		=> $this->strFileTree,
-			'strTable'	=> 'inventory_warehouses',
-			'strField'	=> $this->strFileTree,
-		);
-		
-		// Create file tree
-		$objFileTree = new FileTree($arrFileTreeData);
+				
+		// Create the file tree widget
+		$objFileTree = new FileTree($this->prepareForWidget($GLOBALS['TL_DCA'][$this->strFormId]['fields'][$this->strFileTree], $this->strFileTree, null, $this->strFileTree, $this->strFormId));
 		
 		// Import scripts
 		$GLOBALS['TL_CSS'][] 			= 'system/modules/isotope_inventory/html/inventory_import.css';
@@ -98,6 +89,8 @@ class ModuleIsotopeInventoryImport extends BackendModule
 		$this->Template->importMessage 	= '';	
 		$this->Template->href     		= $this->getReferer( true );
 		$this->Template->title    		= specialchars($GLOBALS['TL_LANG']['MSC']['backBT']);
+		$this->Template->headline  		= specialchars($GLOBALS['TL_LANG']['MSC']['inventory_import_headline']);
+		$this->Template->subheadline	= specialchars($GLOBALS['TL_LANG']['MSC']['inventory_import_subheadline']);
 		
 		$this->Template->formId			= $this->strFormId;
 		$this->Template->formSubmit		= $this->strFormSubmit;
@@ -109,8 +102,9 @@ class ModuleIsotopeInventoryImport extends BackendModule
 		$this->Template->ajaxAction 	= 'startImport';
 		$this->Template->ajaxMethod 	= 'start';
 		$this->Template->submit			= 'import_submit';
+		$this->Template->submitLabel	= $GLOBALS['TL_LANG']['MSC']['btn_inventory_import'];
 		
-		if ($this->Input->post('FORM_SUBMIT') == $this->strFormSubmit)
+		if ($this->Input->post('FORM_SUBMIT') == $this->strFormSubmit && $this->Input->post($this->strFileTree) != '')
 		{
 			$this->importInventoryFromCsv();
 		}
@@ -190,7 +184,7 @@ class ModuleIsotopeInventoryImport extends BackendModule
 	
 	
 	/**
-	 * Import an inventory row - checks for override
+	 * Import an inventory row - checks for override mode
 	 *
 	 * @access	protected
 	 * @param	array

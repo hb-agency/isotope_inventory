@@ -331,38 +331,36 @@ class IsotopeWarehouse extends Model
 			
 		if (count($arrRows))
 		{
+			$strEmailMsg = '';
+			
 			foreach ($arrRows as $key=>$row)
 			{
 				try
-				{
-					$objInvProduct = new IsotopeInventoryProduct($row['product_id']);
-					
-					$intAddRemoveQty = intval($row['quantity']);
-									
-				
-					// Get the product's low inventory threshold
-					$intLowThreshold = $objInvProduct->getLowInventoryThreshold();		
-							
+				{					
+					$intAddRemoveQty = intval($row['quantity']);							
 				
 					// Get current quantity on hand
 					$intCurrentQty = $this->getProductInventory($row['product_id']);
 					
+										
+					// Update the quantity on hand and/or the quantity backordered
+					$objInvProduct = new IsotopeInventoryProduct($row['product_id']);
+					$arrData = $objInvProduct->updateInventory($intAddRemoveQty);
 					
-					// Determine the new quantity
-					$intNewQty = intval($intCurrentQty) + $intAddRemoveQty;
 					
+					// Use IsotopeEmail to send an email notification about warehouse low inventory
+					if ($arrData['sendEmail'])
+					{
+						$strEmailMsg .= (strlen($strEmailMsg) ? '<br />' : '');
+						$strEmailMsg .= specialchars($objInvProduct->name . ': ' . $arrData['newQty']);
+					}
 					
-					// @todo: Use IsotopeMail to send an email notification about warehouse low inventory
 					
 					// If inventory for this warehouse will be below zero, set it to 0
-					if ($intNewQty < 0)
+					if (intval($arrData['newQty']) < 0)
 					{
 						$row['quantity'] = $intCurrentQty * -1;
 					}
-					
-										
-					// Update the quantity on hand and/or the quantity backordered
-					$objInvProduct->updateInventory($intAddRemoveQty);
 					
 					// Update the inventory table									
 					$this->Database->prepare("INSERT INTO {$this->ctable} %s")->set($row)->executeUncached();
@@ -374,6 +372,8 @@ class IsotopeWarehouse extends Model
 					$this->log("Error updating inventory for warehouse ID {$this->id}: " . $e->getMessage(), __METHOD__, TL_ERROR);
 				}
 			}
+					
+			$this->sendLowInvEmail($strEmailMsg);
 		}
 		
 		$this->arrInsertRows = array();
@@ -576,6 +576,29 @@ class IsotopeWarehouse extends Model
 		}
 				
 		return $this->getProducts('p.id', $where, $limit, $countOnly, $args);
+	}
+	
+	
+	/**
+	 * Send a low inventory email.
+	 * 
+	 * @access 	protected
+	 * @param 	string
+	 * @return 	void
+	 */
+	protected function sendLowInvEmail($strEmailMsg)
+	{
+		if (strlen($strEmailMsg) && strlen($this->iso_mail_lowInv) && (strlen($this->email) || strlen($this->iso_lowInv_adminEmail)))
+		{
+			if (!$this->Isotope)
+			{
+				$this->import('Isotope');
+			}
+				
+			$strAdminEmail = strlen($this->iso_lowInv_adminEmail) ? $this->iso_lowInv_adminEmail : (strlen($this->email) ? $this->email : $GLOBALS['TL_CONFIG']['adminEmail']);
+			
+			$this->Isotope->sendMail($this->iso_mail_lowInv, $strAdminEmail, 'en', array('product_data'=>$strEmailMsg));
+		}
 	}
 	
 	

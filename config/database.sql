@@ -42,6 +42,8 @@ CREATE TABLE `tl_iso_warehouses` (
   `city` varchar(255) NOT NULL default '',
   `subdivision` varchar(10) NOT NULL default '',
   `country` varchar(32) NOT NULL default '',
+  `iso_lowInv_adminEmail` varchar(255) NOT NULL default '',
+  `iso_mail_lowInv` int(10) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `pid` (`pid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

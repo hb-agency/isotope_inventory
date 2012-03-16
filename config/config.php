@@ -33,7 +33,7 @@ array_insert($GLOBALS['BE_MOD']['isotope'], 3, array
 (
 	'inventory_warehouses' 	=> array
 	(
-		'tables'			=> array('tl_iso_warehouses'),
+		'tables'			=> array('tl_iso_warehouses', 'tl_iso_inventory'),
 		'icon'				=> 'system/modules/isotope_inventory/html/office_folders.png',
 		'importinventory'	=> array( 'ModuleIsotopeInventoryImport', 'compile' ),
 		'quantities'  		=> array( 'ModuleIsotopeInventoryManager', 'compile' ),
@@ -66,3 +66,4 @@ $GLOBALS['ISO_HOOKS']['updateProductInCollection'][]	= array('InventoryFrontend'
  * Set a cron job to delete any old inventory reporting images
  */
 $GLOBALS['TL_CRON']['daily'][] = array('ModuleIsotopeInventoryHistory', 'deleteOldImages');
+

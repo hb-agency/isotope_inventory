@@ -130,7 +130,7 @@ $GLOBALS['TL_DCA']['tl_iso_warehouses'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'default'                     => 'general_legend},name,defaultWarehouse;{address_legend},firstname,lastname,email,phone,company,street_1,street_2,street_3,postal,city,subdivision,country',
+		'default'                     => 'general_legend},name,defaultWarehouse;{address_legend},firstname,lastname,email,phone,company,street_1,street_2,street_3,postal,city,subdivision,country;{low_inv_legend},iso_lowInv_adminEmail,iso_mail_lowInv',
 	),
 
 	// Fields
@@ -257,15 +257,30 @@ $GLOBALS['TL_DCA']['tl_iso_warehouses'] = array
 			'search'                  => true,
 			'inputType'               => 'text',
 			'eval'                    => array('maxlength'=>64, 'rgxp'=>'email', 'tl_class'=>'w50'),
-		)
+		),
+		'iso_lowInv_adminEmail' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_iso_warehouses']['iso_lowInv_adminEmail'],
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'text',
+			'eval'                    => array('maxlength'=>64, 'rgxp'=>'email', 'tl_class'=>'w50'),
+		),
+		'iso_mail_lowInv' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_iso_warehouses']['iso_mail_lowInv'],
+			'exclude'                 => true,
+			'inputType'               => 'select',
+			'foreignKey'              => 'tl_iso_mail.name',
+			'eval'					  => array('includeBlankOption'=>true, 'mandatory'=>true)
+		),
+		'inventory_file' => array
+		(
+			'eval'					=> array('mandatory'=>true, 'required'=>true, 'files'=>true, 'filesOnly'=>true, 'fieldType'=>'radio', 'extensions'=>'csv'),
+		),
 	)
 );
 
-// Settings for inventory import file tree
-$GLOBALS['TL_DCA']['inventory_warehouses']['fields']['inventory_file']['eval']['files'] = true;
-$GLOBALS['TL_DCA']['inventory_warehouses']['fields']['inventory_file']['eval']['filesOnly'] = true;
-$GLOBALS['TL_DCA']['inventory_warehouses']['fields']['inventory_file']['eval']['fieldType'] = 'radio';
-$GLOBALS['TL_DCA']['inventory_warehouses']['fields']['inventory_file']['eval']['extensions'] = 'csv,';
 
 
 /**

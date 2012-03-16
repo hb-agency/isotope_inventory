@@ -154,7 +154,7 @@ class IsotopeInventoryProduct extends IsotopeProduct
 	{
 		$objReturnData = $this->getProductTypeData();
 		
-		if ($objReturnData->numRows == 0 || $objReturnData->lowthreshold == null)
+		if ($objReturnData->numRows == 0 || $objReturnData->lowthreshold == null || $objReturnData->lowthreshold == 0)
 		{
 			return 3;
 		}
@@ -172,11 +172,14 @@ class IsotopeInventoryProduct extends IsotopeProduct
 	 *
 	 * @access 	protected
 	 * @param 	array
+	 * @return	array
 	 */
 	public function updateInventory($intQuantity)
 	{	
 		try
 		{
+			$arrReturn = array('sendEmail'=>false, 'newQty'=>0);
+			
 			// Get the product type's low inventory threshold
 			$intLowThreshold = $this->getLowInventoryThreshold();		
 					
@@ -186,16 +189,14 @@ class IsotopeInventoryProduct extends IsotopeProduct
 			
 			
 			// Determine the new quantity
-			$intNewQty = intval($intCurrentQty) + intval($intQuantity);
-			
+			$intNewQty = intval($intCurrentQty) + intval($intQuantity);			
+			$arrReturn['newQty'] = $intNewQty;
 			
 				
 			// If the quantity is below the threshold, send an admin email
 			if ($intNewQty < $intLowThreshold)
 			{
-				$strType = 'low';
-				// TODO: Use IsotopeMail to send an email notification
-				//$this->sendAdminNotification($row['product_id'], $strType);
+				$arrReturn['sendEmail'] = true;
 			}
 			
 			
@@ -209,12 +210,6 @@ class IsotopeInventoryProduct extends IsotopeProduct
 				
 				// Set product's backordered quantity
 				$arrProdSet['qtybackordered'] = ($intNewQty * -1);
-				
-				
-				// Send admin email regarding backordered quantity
-				$strType = 'zero';
-				// @todo: Use IsotopeMail to send an email notification
-				//$this->sendAdminNotification($row['product_id'], $strType);
 			}
 			
 			// Don't let the qty on hand go below zero
@@ -222,6 +217,8 @@ class IsotopeInventoryProduct extends IsotopeProduct
 							
 			// Update the quantity on hand and possibly the quantity backordered
 			$this->Database->prepare("UPDATE `tl_iso_products` %s WHERE id = ?")->set($arrProdSet)->executeUncached($this->id);
+			
+			return $arrReturn;
 			
 		}			
 		catch (Exception $e)

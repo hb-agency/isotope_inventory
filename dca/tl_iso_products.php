@@ -26,6 +26,10 @@
  */
 
 
+/**
+ * Config
+ */
+$GLOBALS['TL_DCA']['tl_iso_products']['config']['onload_callback'][] = array('tl_iso_inventory_products', 'loadInvntoryCSS');
 
 
 
@@ -64,10 +68,12 @@ $GLOBALS['TL_DCA']['tl_iso_products']['fields']['inventory'] = array
 class tl_iso_inventory_products extends tl_iso_products
 {
 
-	public function __construct()
+	/**
+	 * Load the inventory CSS file
+	 */
+	public function loadInvntoryCSS()
 	{
 		$GLOBALS['TL_CSS'][] = 'system/modules/isotope_inventory/html/inventory_history.css';
-		parent::__construct();
 	}
 
 	/**

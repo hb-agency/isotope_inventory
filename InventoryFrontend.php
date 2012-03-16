@@ -60,8 +60,6 @@ class InventoryFrontend extends IsotopeFrontend
 		
 		if ($this->Isotope->Config->enableInventory)
 		{
-			$objWarehouse = $this->getWarehouse();
-			
 			$objInvProduct = $this->getInventoryProduct($objProduct->id);
 			
 			$intInventory = $objInvProduct->getInventory();
@@ -106,8 +104,6 @@ class InventoryFrontend extends IsotopeFrontend
 			$totalQuantity += $objItem->product_quantity;
 		}
 		
-		$objWarehouse = $this->getWarehouse();
-		
 		$objInvProduct = $this->getInventoryProduct($objProduct->id);
 		
 		$intInventory = $objInvProduct->getInventory();
@@ -136,8 +132,6 @@ class InventoryFrontend extends IsotopeFrontend
 	{
 		if (!$this->Isotope->Config->enableInventory)
 			return $arrSet;
-				
-		$objWarehouse = $this->getWarehouse();
 		
 		$objInvProduct = $this->getInventoryProduct($objProduct->id);
 		
@@ -159,10 +153,11 @@ class InventoryFrontend extends IsotopeFrontend
 	 * hook function to update product inventory levels
 	 * @access public
 	 * @param object
-	 * @param object
+	 * @param array
+	 * @param array
 	 * @return boolean
 	 */
-	public function updateInventory($objOrder, $arrItems)
+	public function updateInventory($objOrder, $arrItems, $arrData)
 	{	
 		if (!$this->Isotope->Config->enableInventory)
 			return;

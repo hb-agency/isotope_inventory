@@ -72,42 +72,25 @@ class ModuleIsotopeProductListInventory extends ModuleIsotopeProductList
 	 */
 	protected function findProducts($arrCacheIds=null)
 	{
-		$arrIds = $this->findCategoryProducts($this->iso_category_scope, $this->iso_list_where);
+		$time = time();
+		$arrCategories = $this->findCategories($this->iso_category_scope);
 		
-		if (is_array($arrCacheIds) && count($arrCacheIds))
-		{
-			$arrIds = array_intersect($arrIds, $arrCacheIds);
-			
-			foreach($arrIds as $k=>$id)
-			{		
-				$objProductTypeData = $this->getProductTypeData($id);
-				
-				$objQuantity = $this->Database->prepare("SELECT SUM(quantity) as qty FROM tl_iso_inventory WHERE product_id=?")->execute($id);
-				
-				if($objQuantity->qty < 1 && $objProductTypeData->hidezeroinvproducts == '1')
-				{
-					unset($arrIds[$k]);
-				}
-			}
-		}
+		list($arrFilters, $arrSorting, $strWhere, $arrValues) = $this->getFiltersAndSorting();
 		
-		$strSQL = $this->Isotope->getProductSelect();
-		$strSQL .= " WHERE p1.published='1' AND p1.language='' AND p1.id IN (" . implode(',', $arrIds) . ")";
+		$objProductData = $this->Database->prepare(IsotopeProduct::getSelectStatement() . "
+													WHERE (CASE WHEN t.hidezeroinvproducts='1' THEN (SELECT SUM(IFNULL(quantity,0)) FROM tl_iso_inventory WHERE product_id=p1.id) ELSE 1 END) > 0"
+													. " AND p1.language=''"
+													. (BE_USER_LOGGED_IN ? '' : " AND p1.published='1' AND (p1.start='' OR p1.start<$time) AND (p1.stop='' OR p1.stop>$time)")
+													. "AND p1.id IN (SELECT pid FROM tl_iso_product_categories WHERE page_id IN (" . implode(',', $arrCategories) . "))"
+													. (is_array($arrCacheIds) ? ("AND p1.id IN (" . implode(',', $arrCacheIds) . ")") : '')
+													. ($this->iso_list_where == '' ? '' : " AND {$this->iso_list_where}")
+													. "$strWhere ORDER BY c.sorting")
+										 ->execute($arrValues);
+										 
 		
-		$objProductData = $this->Database->execute($strSQL);
-
-		list($arrFilters, $arrSorting) = $this->getFiltersAndSorting();
-
-		return $this->getProducts($objProductData, true, $arrFilters, $arrSorting);
+		return IsotopeFrontend::getProducts($objProductData, IsotopeFrontend::getReaderPageId(null, $this->iso_reader_jumpTo), true, $arrFilters, $arrSorting);
 	}
 	
-
-	
-	private function getProductTypeData($intProductId)
-	{
-		return $this->Database->prepare("SELECT pt.* FROM tl_iso_products p INNER JOIN tl_iso_producttypes pt ON p.type = pt.id WHERE p.id = ?")->limit(1)->execute($intProductId);
-	}
-
 
 }
 
